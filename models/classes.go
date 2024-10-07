@@ -1,8 +1,14 @@
 package models
 
-//models untuk tabel tb_classes
+import "time"
+
+type JSONTime time.Time
+
+// models untuk tabel tb_classes
 type Classes struct {
-	Id          int
-	Name        string
-	Totstudents int
+	Id        int      `json:"id"`
+	Name      string   `json:"name"`
+	Status    int      `json:"status"`
+	CreatedAt JSONTime `json:"created_at"`
+	UpdatedAt JSONTime `json:"updated_at"`
 }

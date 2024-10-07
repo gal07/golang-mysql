@@ -1,19 +1,27 @@
 package main
 
 import (
-	"fmt"
 	data "gosql/database"
-	util "gosql/utility"
 
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	fmt.Println("asd", util.RandomID(10000))
+
 	route := gin.Default()
-	route.POST("/massinsert", data.MassInsert)
-	route.POST("/create", data.Insert)
-	route.GET("/users", data.Get)
+
+	//Basic Auth
+	auth := route.Group("/api", gin.BasicAuth(gin.Accounts{
+		"gigz": "pwpwpwpwpw",
+	})).Use()
+
+	auth.POST("/massinsert", data.MassInsert)
+	auth.POST("/create", data.Insert)
+	auth.GET("/user/:id", func(ctx *gin.Context) {
+		id := ctx.Param("id")
+		data.GetDetail(id, ctx)
+	})
+	auth.GET("/users", data.Get)
 	route.Run()
 
 }

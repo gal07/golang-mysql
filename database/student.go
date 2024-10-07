@@ -125,6 +125,30 @@ func Get(c *gin.Context) {
 	}
 }
 
+func GetDetail(id string, c *gin.Context) {
+
+	var student = studentModels.Student{}
+	db, err := connect()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer db.Close()
+
+	if c.ShouldBind(&student) == nil {
+
+		err := db.QueryRow("select id,name,age,grade from tb_student where id = ?", id).Scan(&student.ID, &student.Name, &student.Age, &student.Grade)
+		if err != nil {
+			ResponMsg.Message = err.Error()
+		}
+	}
+
+	c.JSON(200, gin.H{
+		"response": ResponMsg,
+		"data":     student,
+	})
+}
+
 func MassInsert(c *gin.Context) {
 
 	var person studentModels.Student
@@ -136,9 +160,9 @@ func MassInsert(c *gin.Context) {
 	defer db.Close()
 
 	if c.ShouldBind(&person) == nil {
+
 		t := person.Total
 		for i := 0; i < t; i++ {
-
 			_, err = db.Exec("insert into tb_student (name,age,grade) values (?, ?, ?)", util.RandomFullname(), util.RandomID(20), util.RandomID(20))
 			if err != nil {
 				ResponMsg.Message = "Insert Failed"
