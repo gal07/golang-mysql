@@ -19,8 +19,8 @@ func main() {
 	auth.POST("/user/massinsert", data.MassInsert)
 	auth.POST("/user/create", data.Insert)
 	auth.POST("/user/search", data.Search)
+	auth.POST("/users", data.Get)
 
-	auth.GET("/users", data.Get)
 	auth.GET("/user/:id", func(ctx *gin.Context) {
 		id := ctx.Param("id")
 		data.GetDetail(id, ctx)

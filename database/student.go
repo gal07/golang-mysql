@@ -13,6 +13,7 @@ import (
 
 var ResponMsg = studentModels.Responses{}
 
+// not use
 func GetJSON(sqlString string, taskID string) (string, error) {
 	db, err := connect()
 	if err != nil {
@@ -205,6 +206,8 @@ func Delete(id int, c *gin.Context) {
 func Get(c *gin.Context) {
 
 	var student []studentModels.Student
+	var pagination studentModels.Pagination
+
 	db, err := connect()
 	if err != nil {
 		fmt.Println(err)
@@ -212,9 +215,10 @@ func Get(c *gin.Context) {
 	}
 	defer db.Close()
 
-	if c.ShouldBind(&student) == nil {
+	if c.ShouldBind(&pagination) == nil {
 
-		rows, err := db.Query("select id,name,age,grade from tb_student LIMIT ? OFFSET ?", 100, 1)
+		offset := (pagination.Current - 1) * pagination.Pagesize
+		rows, err := db.Query("select id,name,age,grade from tb_student LIMIT ? OFFSET ?", pagination.Pagesize, offset)
 		if err != nil {
 			fmt.Println(err)
 			return
@@ -232,9 +236,12 @@ func Get(c *gin.Context) {
 			}
 		}
 
+		pagination.Next = pagination.Current + 1
+
 		c.JSON(200, gin.H{
 			"response": ResponMsg,
 			"data":     student,
+			"cursor":   pagination,
 		})
 
 	}
