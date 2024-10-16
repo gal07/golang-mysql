@@ -34,13 +34,9 @@ func Validates(c *gin.Context, m interface{}) bool {
 			resps.Msg = msgForTag(err.Tag(), err.Param())
 		}
 
-		errspon := map[string]any{
-			"error": resps.Field + " : " + resps.Msg,
-		}
+		errspon := resps.Field + " : " + resps.Msg
+		ResponseError(c, 200, err, nil, errspon)
 
-		c.JSON(200, gin.H{
-			"response": errspon,
-		})
 		return true
 
 	}
