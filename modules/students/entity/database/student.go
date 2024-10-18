@@ -22,21 +22,11 @@ func NewStudentRepo(Db *sql.DB) students.IStudentRepo {
 
 func (s accessStudents) Insert(ctx context.Context, req models.Student) (res models.Student, err error) {
 
-	// Transaction begin
-	tx, err := s.Db.BeginTx(ctx, nil)
-	if err != nil {
-		fmt.Println(err)
-		return req, err
-	}
-	defer tx.Rollback()
-
 	// Execute
-	_, err = tx.ExecContext(ctx, "insert into tb_student (name,age,grade) values (?, ?, ?)", &req.Name, &req.Age, &req.Grade)
+	_, err = s.Db.Exec("insert into tb_student (name,age,grade) values (?, ?, ?)", &req.Name, &req.Age, &req.Grade)
 	if err != nil {
 		panic(err)
 	}
-	tx.Commit()
-
 	return req, err
 
 }
@@ -104,20 +94,11 @@ func (s accessStudents) Search(ctx context.Context, req payload.ReqSearch) (res 
 
 func (s accessStudents) Update(ctx context.Context, req models.Student) (res payload.ResUpdate, err error) {
 
-	// Transaction begin
-	tx, err := s.Db.BeginTx(ctx, nil)
-	if err != nil {
-		fmt.Println(err)
-		return res, err
-	}
-	defer tx.Rollback()
-
 	// Execute
-	_, err = tx.ExecContext(ctx, "UPDATE tb_student SET name = ?,age = ?,grade = ? WHERE id = ?", req.Name, req.Age, req.Grade, req.ID)
+	_, err = s.Db.Exec("UPDATE tb_student SET name = ?,age = ?,grade = ? WHERE id = ?", req.Name, req.Age, req.Grade, req.ID)
 	if err != nil {
 		panic(err)
 	}
-	tx.Commit()
 
 	//Fill Struct
 	res.Age = req.Age
@@ -130,20 +111,11 @@ func (s accessStudents) Update(ctx context.Context, req models.Student) (res pay
 
 func (s accessStudents) Delete(ctx context.Context, req payload.ReqDelete) (res bool, err error) {
 
-	// Transaction begin
-	tx, err := s.Db.BeginTx(ctx, nil)
-	if err != nil {
-		fmt.Println(err)
-		return false, err
-	}
-	defer tx.Rollback()
-
 	// Execute
-	_, err = tx.ExecContext(ctx, "UPDATE tb_student SET isdelete = ? WHERE id = ?", 1, req.ID)
+	_, err = s.Db.Exec("UPDATE tb_student SET isdelete = ? WHERE id = ?", 1, req.ID)
 	if err != nil {
 		return false, err
 	}
-	tx.Commit()
 
 	return true, err
 

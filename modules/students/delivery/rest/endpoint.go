@@ -21,18 +21,18 @@ func NewEndPoint(
 
 	// Basic Auth
 	const rootEndpoint = "/api/v1/student"
-	engine.Group(rootEndpoint, gin.BasicAuth(gin.Accounts{
+	r := engine.Group(rootEndpoint, gin.BasicAuth(gin.Accounts{
 		"myuser": "pass123",
 	}))
 
-	engine.Handle("POST", rootEndpoint+"/get", edp.GetAllStudent)
-	engine.Handle("POST", rootEndpoint+"/create", edp.InsertStudent)
-	engine.Handle("POST", rootEndpoint+"/search", edp.SearchStudent)
-	engine.Handle("POST", rootEndpoint+"/massinsert", edp.MassInsertStudent)
-	engine.Handle("PUT", rootEndpoint+"/update/:id", edp.UpdateStudent)
-	engine.Handle("DELETE", rootEndpoint+"/delete/:id", edp.DeleteStudent)
-	engine.Handle("GET", rootEndpoint+"/get/:id", edp.GetStudent)
-	engine.Use()
+	r.POST("/get", edp.GetAllStudent)
+	r.POST("/create", edp.InsertStudent)
+	r.POST("/search", edp.SearchStudent)
+	r.PUT("/update/:id", edp.UpdateStudent)
+	r.DELETE("/delete/:id", edp.DeleteStudent)
+	r.GET("get/:id", edp.GetStudent)
+	r.Use()
+
 	return nil
 
 }
