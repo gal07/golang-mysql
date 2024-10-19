@@ -28,7 +28,7 @@ func (s accessLesson) Insert(ctx context.Context, req models.Lesson) (res models
 	return res, err
 }
 
-func (s accessLesson) Get(ctx context.Context, req payload.ReqGetAllLesson) (res payload.ResGetAllLesson, err error) {
+func (s accessLesson) Get(ctx context.Context, req payload.ReqGetAllLesson) (res []models.Lesson, err error) {
 	// Instance
 	var lesson []models.Lesson
 
@@ -49,19 +49,13 @@ func (s accessLesson) Get(ctx context.Context, req payload.ReqGetAllLesson) (res
 		}
 	}
 
-	// Fill Response
-	res.Listlesson = lesson
-	res.Current = req.CurrentPage
-	res.NextPage = req.CurrentPage + 1
-	res.Pagesize = req.PageSize
-
-	return res, err
+	return lesson, err
 }
 
 func (s accessLesson) GetDetail(ctx context.Context, req payload.ReqGetDetail) (res models.Lesson, err error) {
 
 	// Execute
-	err = s.Db.QueryRow("select id,name,teacher from tb_lesson where id = ? and isdelete = ?", req.ID, 0).Scan(&res.ID, &res.Name, &res.Teacher)
+	err = s.Db.QueryRow("select id,name,teacher,status from tb_lesson where id = ? and isdelete = ?", req.ID, 0).Scan(&res.ID, &res.Name, &res.Teacher, &res.Status)
 	if err != nil {
 		return res, err
 	}
@@ -75,10 +69,10 @@ func (s accessLesson) Search(ctx context.Context, req payload.ReqSearch) (res []
 	findteacher := "%" + req.Search + "%"
 
 	// Querying to find spesific student
-	rows, err := s.Db.Query("SELECT id,name,teacher from tb_lesson where name LIKE ? and isdelete = ?", findteacher, 0)
+	rows, err := s.Db.Query("SELECT id,name,teacher,status from tb_lesson where name LIKE ? and isdelete = ?", findteacher, 0)
 	for rows.Next() {
 		var each = models.Lesson{}
-		var err = rows.Scan(&each.ID, &each.Name, &each.Teacher)
+		var err = rows.Scan(&each.ID, &each.Name, &each.Teacher, &each.Status)
 		if err != nil {
 			return res, err
 		} else {
@@ -93,7 +87,7 @@ func (s accessLesson) Update(ctx context.Context, req models.Lesson) (res payloa
 	// Execute
 	_, err = s.Db.Exec("UPDATE tb_lesson SET name = ?,teacher = ? WHERE id = ?", req.Name, req.Teacher, req.ID)
 	if err != nil {
-		panic(err)
+		return res, err
 	}
 
 	//Fill Struct

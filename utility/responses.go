@@ -29,3 +29,11 @@ func ResponseError(c *gin.Context, code int, msg error, obj interface{}, errorMs
 		Error:   errorMsg,
 	})
 }
+
+func CheckStatus(status int) (res string) {
+	if status == 1 {
+		return "Active"
+	} else {
+		return "Not Active"
+	}
+}
