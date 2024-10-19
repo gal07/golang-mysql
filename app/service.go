@@ -47,7 +47,7 @@ func service(
 	if err != nil {
 		panic(err)
 	}
-	lessonUsecase, err := lessonUsecase.NewUseCase("test", lessonEntity)
+	lessonUsecase, err := lessonUsecase.NewUseCase("test", lessonEntity, teacherEntity)
 	if err != nil {
 		panic(err)
 	}
