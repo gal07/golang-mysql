@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	lessonEntity "gosql/modules/lesson/entity"
 	"gosql/modules/teacher"
 	"gosql/modules/teacher/entity"
 )
@@ -8,10 +9,13 @@ import (
 type teacherUseCase struct {
 	config        string
 	teacherEntity entity.TeacherEntity
+	lessonEntity  lessonEntity.LessonEntity
 }
 
-func NewUseCase(config string, teacherEntity entity.TeacherEntity) (teacher.ITeacherUseCase, error) {
+func NewUseCase(config string, teacherEntity entity.TeacherEntity, lessonEntity lessonEntity.LessonEntity) (teacher.ITeacherUseCase, error) {
 	return &teacherUseCase{
 		config:        "test",
-		teacherEntity: teacherEntity}, nil
+		teacherEntity: teacherEntity,
+		lessonEntity:  lessonEntity,
+	}, nil
 }

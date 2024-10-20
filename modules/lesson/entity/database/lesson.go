@@ -107,3 +107,13 @@ func (s accessLesson) Delete(ctx context.Context, req payload.ReqDelete) (res bo
 
 	return true, err
 }
+
+func (s accessLesson) GetByTeacherID(ctx context.Context, req payload.ReqByTeacherId) (res models.Lesson, err error) {
+	// Execute
+	err = s.Db.QueryRow("select id,name,teacher,status from tb_lesson where teacher = ? and isdelete = ?", req.ID, 0).Scan(&res.ID, &res.Name, &res.Teacher, &res.Status)
+	if err != nil {
+		return res, err
+	}
+
+	return res, err
+}

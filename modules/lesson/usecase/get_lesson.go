@@ -49,13 +49,13 @@ func (s *lessonUseCase) GetDetail(ctx context.Context, req payload.ReqGetDetail)
 	}
 
 	//Fill Response
-	name, err := s.teacherEntity.TeacherRepo.GetDetail(ctx, teacherPayload.ReqGetDetail{ID: resp.Teacher})
+	teacher, err := s.teacherEntity.TeacherRepo.GetDetail(ctx, teacherPayload.ReqGetDetail{ID: resp.Teacher})
 	if err != nil {
 		return res, err
 	}
 	res.ID = resp.ID
 	res.Lesson = resp.Name
-	res.Teacher = name.Name
+	res.Teacher = teacher.Name
 	res.Status = util.CheckStatus(resp.Status)
 
 	return res, err

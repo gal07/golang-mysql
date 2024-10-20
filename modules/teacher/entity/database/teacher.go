@@ -3,7 +3,6 @@ package database
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	"gosql/modules/teacher"
 	"gosql/modules/teacher/models"
 	"gosql/modules/teacher/payload"
@@ -30,12 +29,11 @@ func (s accessTeachers) Insert(ctx context.Context, req models.Teacher) (res mod
 	return req, err
 }
 
-func (s accessTeachers) Get(ctx context.Context, req payload.ReqGetAllTeacher) (res payload.ResGetAllTeacher, err error) {
+func (s accessTeachers) Get(ctx context.Context, req payload.ReqGetAllTeacher) (res []models.Teacher, err error) {
 	// Instance
 	var teacher []models.Teacher
-
 	offset := (req.CurrentPage - 1) * req.PageSize
-	fmt.Println("db getall current page : ", req.CurrentPage)
+
 	// Execute
 	rows, err := s.Db.Query("select id,name,age,status,isdelete,created_at,deleted_at from tb_teacher WHERE isdelete = ? LIMIT ? OFFSET ?", 0, req.PageSize, offset)
 	if err != nil {
@@ -51,19 +49,12 @@ func (s accessTeachers) Get(ctx context.Context, req payload.ReqGetAllTeacher) (
 			teacher = append(teacher, each)
 		}
 	}
-
-	// Fill Response
-	res.ListTeacher = teacher
-	res.Current = req.CurrentPage
-	res.NextPage = req.CurrentPage + 1
-	res.Pagesize = req.PageSize
-
-	return res, err
+	return teacher, err
 }
 
 func (s accessTeachers) GetDetail(ctx context.Context, req payload.ReqGetDetail) (res models.Teacher, err error) {
 
-	err = s.Db.QueryRow("select id,name,age from tb_teacher where id = ? and isdelete = ?", req.ID, 0).Scan(&res.ID, &res.Name, &res.Age)
+	err = s.Db.QueryRow("select id,name,age,status from tb_teacher where id = ? and isdelete = ?", req.ID, 0).Scan(&res.ID, &res.Name, &res.Age, &res.Status)
 	if err != nil {
 		return res, err
 	}
@@ -77,10 +68,10 @@ func (s accessTeachers) Search(ctx context.Context, req payload.ReqSearch) (res 
 	findteacher := "%" + req.Search + "%"
 
 	// Querying to find spesific student
-	rows, err := s.Db.Query("SELECT id,name,age from tb_teacher where name LIKE ? and isdelete = ?", findteacher, 0)
+	rows, err := s.Db.Query("SELECT id,name,age,status from tb_teacher where name LIKE ? and isdelete = ?", findteacher, 0)
 	for rows.Next() {
 		var each = models.Teacher{}
-		var err = rows.Scan(&each.ID, &each.Name, &each.Age)
+		var err = rows.Scan(&each.ID, &each.Name, &each.Age, &each.Status)
 		if err != nil {
 			return res, err
 		} else {
