@@ -30,6 +30,15 @@ func ResponseError(c *gin.Context, code int, msg error, obj interface{}, errorMs
 	})
 }
 
+func ResponseErrorCustom(c *gin.Context, code int, obj interface{}, errorMsg string) {
+	c.JSON(code, Response{
+		Code:    code,
+		Message: errorMsg,
+		Data:    obj,
+		Error:   "Error",
+	})
+}
+
 func CheckStatus(status int) (res string) {
 	if status == 1 {
 		return "Active"

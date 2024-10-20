@@ -1,14 +1,14 @@
 package rest
 
 import (
-	"gosql/modules/students/payload"
+	"gosql/modules/report/payload"
 	util "gosql/utility"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
 
-func (e endpoint) DeleteStudent(c *gin.Context) {
+func (e endpoint) DeleteReport(c *gin.Context) {
 
 	// Filtering URL
 	id := c.Param("id")
@@ -38,7 +38,7 @@ func (e endpoint) DeleteStudent(c *gin.Context) {
 	}
 
 	// call repository
-	res, err := e.useCaseStudent.DeleteStudent(c, payload)
+	res, err := e.useCaseReport.DeleteReport(c, payload)
 	if err != nil {
 		util.ResponseError(c, 200, err, nil, "Failed")
 		return

@@ -1,7 +1,6 @@
 package rest
 
 import (
-	"fmt"
 	"gosql/modules/lesson/payload"
 	util "gosql/utility"
 	"strconv"
@@ -28,8 +27,7 @@ func (e endpoint) DeleteLesson(c *gin.Context) {
 
 	// Match
 	if is != payload.ID {
-		// util.ResponseError(c, 200, err, nil, "ID Not Match")
-		fmt.Println("ID Not Match")
+		util.ResponseErrorCustom(c, 200, nil, "ID Not Match")
 		return
 	}
 
