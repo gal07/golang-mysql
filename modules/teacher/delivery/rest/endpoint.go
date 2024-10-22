@@ -2,6 +2,7 @@ package rest
 
 import (
 	"gosql/modules/teacher"
+	util "gosql/utility"
 
 	"github.com/gin-gonic/gin"
 )
@@ -21,10 +22,7 @@ func NewEndPoint(
 
 	// Basic Auth
 	const rootEndpoint = "/api/v1/teacher"
-	r := engine.Group(rootEndpoint, gin.BasicAuth(gin.Accounts{
-		"myuser": "pass123",
-	}))
-
+	r := engine.Group(rootEndpoint, util.VerifyToken())
 	r.POST("/get", edp.GetTeacher)
 	r.POST("/create", edp.InsertTeacher)
 	r.POST("/search", edp.SearchTeacher)

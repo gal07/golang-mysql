@@ -17,6 +17,10 @@ import (
 	reportEntity "gosql/modules/report/entity"
 	reportUsecase "gosql/modules/report/usecase"
 
+	authtRest "gosql/modules/auth/delivery/rest"
+	authEntity "gosql/modules/auth/entity"
+	authUsecase "gosql/modules/auth/usecase"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -48,6 +52,11 @@ func service(
 		panic(err)
 	}
 
+	authEntity, err := authEntity.NewEntity(sqlCon)
+	if err != nil {
+		panic(err)
+	}
+
 	// call usecase
 	studentUsecase, err := studentUsecase.NewUseCase("test", studentEntity)
 	if err != nil {
@@ -65,11 +74,16 @@ func service(
 	if err != nil {
 		panic(err)
 	}
+	authUsecase, err := authUsecase.NewUseCase("test", authEntity)
+	if err != nil {
+		panic(err)
+	}
 
 	// call endpoint
 	studentRest.NewEndPoint(route, studentUsecase)
 	teacherRest.NewEndPoint(route, teacherUsecase)
 	lessonRest.NewEndPoint(route, lessonUsecase)
 	reportRest.NewEndPoint(route, reportUsecase)
+	authtRest.NewEndPoint(route, authUsecase)
 
 }

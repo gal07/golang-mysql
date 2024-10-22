@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"fmt"
 	"gosql/modules/students"
 
 	"github.com/gin-gonic/gin"
@@ -17,6 +16,9 @@ func NewMiddleWare(useCaseStudent students.IStudentUseCase) middleware {
 	}
 }
 
-func MiddlewareAuth(*gin.Context) {
-	fmt.Println("middleware run")
+func MiddlewareAuth(c *gin.Context) {
+
+	// Verifiy Token
+	// util.VerifyToken(c)
+
 }
