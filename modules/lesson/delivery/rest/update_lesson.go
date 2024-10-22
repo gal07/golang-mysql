@@ -25,20 +25,29 @@ func (e endpoint) UpdateLesson(c *gin.Context) {
 	}
 
 	// Bind
-	payload := models.Lesson{}
-	if err := c.Bind(&payload); err != nil {
+	payloads := models.Lesson{}
+	if err := c.Bind(&payloads); err != nil {
 		panic(err)
 	}
-	payload.ID = getID.ID
+	payloads.ID = getID.ID
 
 	// service
-	notvalid := util.Validates(c, payload)
+	notvalid := util.Validates(c, payloads)
 	if notvalid {
 		return
 	}
 
+	// Prevent to update teacher ID where has been owned lesson
+	found, err := e.useCaseLesson.GetByTeacherID(c, payload.ReqByTeacherId{
+		ID: payloads.Teacher,
+	})
+	if found {
+		util.ResponseErrorCustom(c, 200, nil, "Teacher already owned lesson.")
+		panic(err)
+	}
+
 	// call repository
-	res, err := e.useCaseLesson.UpdateLesson(c, payload)
+	res, err := e.useCaseLesson.UpdateLesson(c, payloads)
 	if err != nil {
 		util.ResponseError(c, 200, err, nil, "Error")
 		panic(err)

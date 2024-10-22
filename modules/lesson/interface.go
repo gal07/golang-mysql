@@ -10,6 +10,7 @@ type ILessonUseCase interface {
 	InsertLesson(ctx context.Context, req models.Lesson) (res payload.ResInsert, err error)
 	GetLesson(ctx context.Context, req payload.ReqGetAllLesson) (res payload.ResGetAllLesson, err error)
 	GetDetail(ctx context.Context, req payload.ReqGetDetail) (res payload.ResGetDetailLesson, err error)
+	GetByTeacherID(ctx context.Context, req payload.ReqByTeacherId) (res bool, err error)
 	SearchLesson(ctx context.Context, req payload.ReqSearch) (res []payload.ResGetDetailLesson, err error)
 	UpdateLesson(ctx context.Context, req models.Lesson) (res payload.ResUpdate, err error)
 	DeleteLesson(ctx context.Context, req payload.ReqDelete) (res bool, err error)

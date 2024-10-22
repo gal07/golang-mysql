@@ -60,3 +60,15 @@ func (s *lessonUseCase) GetDetail(ctx context.Context, req payload.ReqGetDetail)
 
 	return res, err
 }
+
+func (s *lessonUseCase) GetByTeacherID(ctx context.Context, req payload.ReqByTeacherId) (res bool, err error) {
+	// call repository
+	resp, err := s.lessonEntity.LessonRepo.GetByTeacherID(ctx, req)
+	if err != nil {
+		return false, err
+	}
+
+	fmt.Println(resp)
+
+	return true, err
+}

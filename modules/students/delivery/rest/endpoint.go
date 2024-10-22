@@ -25,6 +25,7 @@ func NewEndPoint(
 	r := engine.Group(rootEndpoint, util.VerifyToken())
 	r.POST("/get", edp.GetAllStudent)
 	r.POST("/create", edp.InsertStudent)
+	r.POST("/massinsert", edp.MassInsertStudent)
 	r.POST("/search", edp.SearchStudent)
 	r.PUT("/update/:id", edp.UpdateStudent)
 	r.DELETE("/delete/:id", edp.DeleteStudent)
