@@ -107,6 +107,7 @@ func (s accessReport) Delete(ctx context.Context, req payload.ReqDelete) (res bo
 }
 
 func (s accessReport) GetByStudentnLesson(ctx context.Context, req payload.ReqGetByStudentLesson) (res bool, err error) {
+
 	// Execute
 	var name = ""
 	err = s.Db.QueryRow("select name from tb_report_card where student = ? lesson = ? and isdelete = ?", req.StudentID, req.LessonID, 0).Scan(&name)
@@ -115,4 +116,15 @@ func (s accessReport) GetByStudentnLesson(ctx context.Context, req payload.ReqGe
 	}
 
 	return false, nil
+}
+
+func (s accessReport) GetByLesson(ctx context.Context, req payload.GetByLesson) (res models.Report, err error) {
+
+	// Execute
+	err = s.Db.QueryRow("select id,student,lesson,grade,status from tb_report_card where lesson = ? and isdelete = ?", req.LessonID, 0).Scan(&res.ID, &res.Student, &res.Lesson, &res.Grade, &res.Status)
+	if err != nil {
+		return res, err
+	}
+
+	return res, nil
 }

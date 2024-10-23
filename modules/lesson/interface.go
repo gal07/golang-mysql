@@ -4,6 +4,7 @@ import (
 	"context"
 	"gosql/modules/lesson/models"
 	"gosql/modules/lesson/payload"
+	reportPayload "gosql/modules/report/payload"
 )
 
 type ILessonUseCase interface {
@@ -11,6 +12,7 @@ type ILessonUseCase interface {
 	GetLesson(ctx context.Context, req payload.ReqGetAllLesson) (res payload.ResGetAllLesson, err error)
 	GetDetail(ctx context.Context, req payload.ReqGetDetail) (res payload.ResGetDetailLesson, err error)
 	GetByTeacherID(ctx context.Context, req payload.ReqByTeacherId) (res bool, err error)
+	GetByLesson(ctx context.Context, req reportPayload.GetByLesson) (res bool, err error)
 	SearchLesson(ctx context.Context, req payload.ReqSearch) (res []payload.ResGetDetailLesson, err error)
 	UpdateLesson(ctx context.Context, req models.Lesson) (res payload.ResUpdate, err error)
 	DeleteLesson(ctx context.Context, req payload.ReqDelete) (res bool, err error)

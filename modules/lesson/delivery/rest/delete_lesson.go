@@ -2,6 +2,7 @@ package rest
 
 import (
 	"gosql/modules/lesson/payload"
+	reportPayload "gosql/modules/report/payload"
 	util "gosql/utility"
 	"strconv"
 
@@ -34,6 +35,16 @@ func (e endpoint) DeleteLesson(c *gin.Context) {
 	// service
 	notvalid := util.Validates(c, payload)
 	if notvalid {
+		return
+	}
+
+	// Prevent delete lesson if id lesson exist in tb_report_card
+	isfound, err := e.useCaseLesson.GetByLesson(c, reportPayload.GetByLesson{
+		LessonID: payload.ID,
+	})
+
+	if isfound {
+		util.ResponseErrorCustom(c, 200, nil, "Can't delete lesson, lesson exist on active record.")
 		return
 	}
 
