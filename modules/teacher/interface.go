@@ -2,6 +2,7 @@ package teacher
 
 import (
 	"context"
+	lessonPayload "gosql/modules/lesson/payload"
 	"gosql/modules/teacher/models"
 	"gosql/modules/teacher/payload"
 )
@@ -10,6 +11,7 @@ type ITeacherUseCase interface {
 	InsertTeacher(ctx context.Context, req models.Teacher) (res payload.ResInsert, err error)
 	GetTeacher(ctx context.Context, req payload.ReqGetAllTeacher) (res payload.ResGetAllTeacher, err error)
 	GetDetail(ctx context.Context, req payload.ReqGetDetail) (res payload.ResGetDetailTeacher, err error)
+	GetTeacherOnLesson(ctx context.Context, req lessonPayload.ReqByTeacherId) (res bool, err error)
 	SearchTeacher(ctx context.Context, req payload.ReqSearch) (res []payload.ResGetDetailTeacher, err error)
 	UpdateTeacher(ctx context.Context, req models.Teacher) (res payload.ResUpdate, err error)
 	DeleteTeacher(ctx context.Context, req payload.ReqDelete) (res bool, err error)

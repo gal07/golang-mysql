@@ -5,6 +5,8 @@ import (
 	util "gosql/utility"
 	"strconv"
 
+	lessonPayload "gosql/modules/lesson/payload"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -34,6 +36,15 @@ func (e endpoint) DeleteTeacher(c *gin.Context) {
 	// service
 	notvalid := util.Validates(c, payload)
 	if notvalid {
+		return
+	}
+
+	// Prevent delete teacher, if teacher id found on tb_lesson
+	isfound, err := e.useCaseTeacher.GetTeacherOnLesson(c, lessonPayload.ReqByTeacherId{
+		ID: payload.ID,
+	})
+	if isfound {
+		util.ResponseErrorCustom(c, 200, nil, "Can't delete teacher, teacher exist on active record.")
 		return
 	}
 
