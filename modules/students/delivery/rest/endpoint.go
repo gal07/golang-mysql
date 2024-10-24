@@ -21,15 +21,15 @@ func NewEndPoint(
 	}
 
 	// Basic Auth
-	const rootEndpoint = "/api/v1/student"
+	const rootEndpoint = "/api/v1/students"
 	r := engine.Group(rootEndpoint, util.VerifyToken())
-	r.POST("/get", edp.GetAllStudent)
+	r.POST("/", edp.GetAllStudent)
 	r.POST("/create", edp.InsertStudent)
 	r.POST("/massinsert", edp.MassInsertStudent)
 	r.POST("/search", edp.SearchStudent)
 	r.PUT("/update/:id", edp.UpdateStudent)
 	r.DELETE("/delete/:id", edp.DeleteStudent)
-	r.GET("get/:id", edp.GetStudent)
+	r.GET("/:id", edp.GetStudent)
 	r.Use()
 
 	return nil
