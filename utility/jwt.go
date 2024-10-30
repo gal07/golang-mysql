@@ -2,8 +2,8 @@ package utility
 
 import (
 	"errors"
-	"fmt"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 
@@ -12,7 +12,7 @@ import (
 )
 
 var (
-	secretKey = []byte("oklajsjdmmasdkkasdkkllasodo")
+	secretKey = []byte(os.Getenv("KEY_JWT"))
 )
 
 func CreateToken(username string) (string, error) {
@@ -71,12 +71,10 @@ func VerifyToken() func(c *gin.Context) {
 		}
 
 		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-			fmt.Println("parse : ", token)
 			return secretKey, nil
 		})
 
 		if err != nil {
-			fmt.Println(err)
 			ResponseErrorCustom(c, http.StatusUnauthorized, nil, err.Error())
 			c.Abort()
 			return
