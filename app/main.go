@@ -3,6 +3,7 @@ package main
 import (
 	"gosql/middleware"
 	"log"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -14,6 +15,9 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 
+	// server stuff
+	serverPort := os.Getenv("SERVER_PORT")
+
 	route := gin.Default()
 	route.Use(middleware.MiddlewareAuth)
 
@@ -21,6 +25,6 @@ func main() {
 	service(route)
 
 	// Run
-	route.Run()
+	route.Run(serverPort)
 
 }
