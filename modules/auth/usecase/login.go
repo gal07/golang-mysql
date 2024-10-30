@@ -3,9 +3,8 @@ package usecase
 import (
 	"context"
 	"errors"
-	"fmt"
-	"gosql/modules/auth/models"
 	"gosql/modules/auth/payload"
+	tokenModel "gosql/modules/token/models"
 	util "gosql/utility"
 )
 
@@ -16,8 +15,6 @@ func (s *authUseCase) Login(ctx context.Context, req payload.Login) (res payload
 	if err != nil {
 		return res, err
 	}
-
-	fmt.Println(matchEmail.Password)
 
 	// Validate password
 	if !matchEmail.ValidatePassword(req.Password) {
@@ -30,26 +27,32 @@ func (s *authUseCase) Login(ctx context.Context, req payload.Login) (res payload
 		return res, err
 	}
 
-	// fill response
-	res.Token = token
-	res.Islogin = true
-
-	return res, nil
-
-}
-
-func (s *authUseCase) Register(ctx context.Context, req models.Auth) (res models.Auth, err error) {
-
-	// Encrypt password
-	req.EncryptPassword()
-
-	// Insert
-	register, err := s.authEntity.AuthRepo.Insert(ctx, req)
+	// create refresh token
+	reftoken, expired, err := util.RefreshToken(req.Email)
 	if err != nil {
 		return res, err
 	}
 
-	res = register
+	// save refresh token to white list
+	_, err = s.tokenEntity.TokenRepo.Create(ctx, tokenModel.Token{
+		Token:   reftoken,
+		Type:    "refresh-token",
+		Expires: expired,
+		Email:   req.Email,
+	})
+
+	// save token to white lsit
+	_, err = s.tokenEntity.TokenRepo.Create(ctx, tokenModel.Token{
+		Token:   token,
+		Type:    "primary-token",
+		Expires: expired,
+		Email:   req.Email,
+	})
+
+	// fill response
+	res.Token = token
+	res.RefreshToken = reftoken
+	res.Islogin = true
 
 	return res, nil
 

@@ -21,6 +21,8 @@ import (
 	authEntity "gosql/modules/auth/entity"
 	authUsecase "gosql/modules/auth/usecase"
 
+	tokenEntity "gosql/modules/token/entity"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -57,6 +59,11 @@ func service(
 		panic(err)
 	}
 
+	tokenEntity, err := tokenEntity.NewEntity(sqlCon)
+	if err != nil {
+		panic(err)
+	}
+
 	// call usecase
 	studentUsecase, err := studentUsecase.NewUseCase("test", studentEntity)
 	if err != nil {
@@ -74,7 +81,7 @@ func service(
 	if err != nil {
 		panic(err)
 	}
-	authUsecase, err := authUsecase.NewUseCase("test", authEntity)
+	authUsecase, err := authUsecase.NewUseCase("test", authEntity, tokenEntity)
 	if err != nil {
 		panic(err)
 	}

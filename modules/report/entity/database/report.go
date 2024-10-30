@@ -57,7 +57,7 @@ func (s accessReport) Get(ctx context.Context, req payload.ReqGetAllReport) (res
 func (s accessReport) GetDetail(ctx context.Context, req payload.ReqGetDetail) (res models.Report, err error) {
 
 	// Execute
-	err = s.Db.QueryRow("select id,student,lesson,grade,status from tb_report_card where id = ? and isdelete = ?", req.ID, 0).Scan(&res.ID, &res.Student, &res.Lesson, &res.Grade, &res.Status)
+	err = s.Db.QueryRow("select id,student,lesson,grade,status from tb_report_card WHERE id = ? AND isdelete = ?", req.ID, 0).Scan(&res.ID, &res.Student, &res.Lesson, &res.Grade, &res.Status)
 	if err != nil {
 		return res, err
 	}
@@ -71,7 +71,7 @@ func (s accessReport) Search(ctx context.Context, req payload.ReqSearch) (res []
 	findteacher := "%" + req.Search + "%"
 
 	// Querying to find spesific student
-	rows, err := s.Db.Query("SELECT id,student,lesson,grade,status from tb_report_card where grade LIKE ? and isdelete = ?", findteacher, 0)
+	rows, err := s.Db.Query("SELECT id,student,lesson,grade,status from tb_report_card WHERE grade LIKE ? AND isdelete = ?", findteacher, 0)
 	for rows.Next() {
 		var each = models.Report{}
 		var err = rows.Scan(&each.ID, &each.Student, &each.Lesson, &each.Grade, &each.Status)
@@ -109,19 +109,19 @@ func (s accessReport) Delete(ctx context.Context, req payload.ReqDelete) (res bo
 func (s accessReport) GetByStudentnLesson(ctx context.Context, req payload.ReqGetByStudentLesson) (res bool, err error) {
 
 	// Execute
-	var name = ""
-	err = s.Db.QueryRow("select name from tb_report_card where student = ? lesson = ? and isdelete = ?", req.StudentID, req.LessonID, 0).Scan(&name)
+	var student = ""
+	err = s.Db.QueryRow("select student from tb_report_card WHERE student = ? AND lesson = ? AND isdelete = ?", req.StudentID, req.LessonID, 0).Scan(&student)
 	if err != nil {
-		return true, nil
+		return false, nil
 	}
 
-	return false, nil
+	return true, nil
 }
 
 func (s accessReport) GetByLesson(ctx context.Context, req payload.GetByLesson) (res models.Report, err error) {
 
 	// Execute
-	err = s.Db.QueryRow("select id,student,lesson,grade,status from tb_report_card where lesson = ? and isdelete = ?", req.LessonID, 0).Scan(&res.ID, &res.Student, &res.Lesson, &res.Grade, &res.Status)
+	err = s.Db.QueryRow("select id,student,lesson,grade,status from tb_report_card WHERE lesson = ? AND isdelete = ?", req.LessonID, 0).Scan(&res.ID, &res.Student, &res.Lesson, &res.Grade, &res.Status)
 	if err != nil {
 		return res, err
 	}

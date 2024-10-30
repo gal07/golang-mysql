@@ -24,6 +24,7 @@ func NewEndPoint(
 	r := engine.Group(rootEndpoint)
 	r.POST("/signup", edp.Register)
 	r.POST("/signin", edp.Login)
+	r.POST("/refreshtoken", edp.RefreshToken)
 	r.Use()
 
 	return nil

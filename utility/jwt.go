@@ -2,6 +2,7 @@ package utility
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"strings"
 	"time"
@@ -19,12 +20,28 @@ func CreateToken(username string) (string, error) {
 		jwt.MapClaims{
 			"username": username,
 			"exp":      time.Now().Add(time.Minute * 60).Unix(),
+			"type":     "primary-token",
 		})
 	tokenString, err := token.SignedString(secretKey)
 	if err != nil {
 		return "", nil
 	}
 	return tokenString, nil
+}
+
+func RefreshToken(username string) (string, any, error) {
+	Expires := time.Now().Add(time.Hour * 24).Unix()
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256,
+		jwt.MapClaims{
+			"username": username,
+			"exp":      Expires,
+			"type":     "refresh-token",
+		})
+	tokenString, err := token.SignedString(secretKey)
+	if err != nil {
+		return "", "", nil
+	}
+	return tokenString, Expires, nil
 }
 
 func CheckBearer(header string) (string, error) {
@@ -54,10 +71,12 @@ func VerifyToken() func(c *gin.Context) {
 		}
 
 		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+			fmt.Println("parse : ", token)
 			return secretKey, nil
 		})
 
 		if err != nil {
+			fmt.Println(err)
 			ResponseErrorCustom(c, http.StatusUnauthorized, nil, err.Error())
 			c.Abort()
 			return
@@ -72,5 +91,24 @@ func VerifyToken() func(c *gin.Context) {
 		c.Next()
 
 	}
+
+}
+
+func ValidToken(c *gin.Context, token string) bool {
+
+	// Parse
+	tokens, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
+		return secretKey, nil
+	})
+
+	if err != nil {
+		return false
+	}
+
+	if !tokens.Valid {
+		return false
+	}
+
+	return true
 
 }
