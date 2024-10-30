@@ -1,8 +1,6 @@
 package utility
 
 import (
-	"fmt"
-
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 )
@@ -26,10 +24,8 @@ func Validates(c *gin.Context, m interface{}) bool {
 	if err != nil {
 
 		if _, ok := err.(*validator.InvalidValidationError); ok {
-			fmt.Println(err)
 		}
 		for _, err := range err.(validator.ValidationErrors) {
-			fmt.Println(err.Field()+" : ", msgForTag(err.Tag(), err.Param()))
 			resps.Field = err.Field()
 			resps.Msg = msgForTag(err.Tag(), err.Param())
 		}

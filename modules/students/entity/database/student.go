@@ -3,7 +3,6 @@ package database
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	"gosql/modules/students"
 	"gosql/modules/students/models"
 	"gosql/modules/students/payload"
@@ -36,7 +35,6 @@ func (s accessStudents) Get(ctx context.Context, req payload.ReqGetAllStudents) 
 	var student []models.Student
 
 	offset := (req.CurrentPage - 1) * req.PageSize
-	fmt.Println("db getall current page : ", req.CurrentPage)
 	// Execute
 	rows, err := s.Db.Query("select id,name,age,grade from tb_student WHERE isdelete = ? LIMIT ? OFFSET ?", 0, req.PageSize, offset)
 	if err != nil {
@@ -74,7 +72,6 @@ func (s accessStudents) GetDetail(ctx context.Context, req payload.ReqGetDetail)
 }
 
 func (s accessStudents) Search(ctx context.Context, req payload.ReqSearch) (res []models.Student, err error) {
-	fmt.Println("search : ", req.Search)
 	// bind search value
 	findstudent := "%" + req.Search + "%"
 
@@ -126,30 +123,24 @@ func (s accessStudents) MassInsert(ctx context.Context, req payload.ReqMassCreat
 	// Transaction begin
 	tx, err := s.Db.BeginTx(ctx, nil)
 	if err != nil {
-		fmt.Println(err)
 		return res, err
 	}
 	var markinsert = 0
 	for i := 0; i < req.Total; i++ {
-		result, err := tx.ExecContext(ctx, "insert into tb_student (name,age,grade) values (?, ?, ?)", util.RandomFullname(), util.RandomID(20), util.RandomID(20))
+		_, err := tx.ExecContext(ctx, "insert into tb_student (name,age,grade) values (?, ?, ?)", util.RandomFullname(), util.RandomID(20), util.RandomID(20))
 		if err != nil {
-			fmt.Println("failed insert ke - ", i+1)
 			return res, err
 		} else {
-			fmt.Println("success insert ke - ", i+1)
 			markinsert = i + 1
-			fmt.Println(result.LastInsertId())
 		}
 	}
 
 	err = tx.Commit()
 	if err != nil {
-		fmt.Println(err)
 		return res, err
 	}
 
 	res.TotalInput = markinsert
-	fmt.Println("Look total from database : ", res.TotalInput)
 
 	return res, err
 }

@@ -1,7 +1,6 @@
 package rest
 
 import (
-	"fmt"
 	"gosql/modules/students/payload"
 	util "gosql/utility"
 
@@ -28,7 +27,6 @@ func (e endpoint) MassInsertStudent(c *gin.Context) {
 		util.ResponseError(c, 200, err, nil, "Error")
 		panic(err)
 	}
-	fmt.Println("Look total from delivery : ", res.TotalInput)
 
 	util.ResponseOK(c, 200, res)
 }

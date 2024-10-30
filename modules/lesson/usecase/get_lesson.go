@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"context"
-	"fmt"
 	"gosql/modules/lesson/payload"
 	teacherPayload "gosql/modules/teacher/payload"
 	util "gosql/utility"
@@ -18,7 +17,6 @@ func (s *lessonUseCase) GetLesson(ctx context.Context, req payload.ReqGetAllLess
 
 	// Fill Response
 	for i := 0; i < len(resp); i++ {
-		fmt.Println("Teacher ID : ", resp[i].Teacher)
 		name, err := s.teacherEntity.TeacherRepo.GetDetail(ctx, teacherPayload.ReqGetDetail{ID: resp[i].Teacher})
 		if err != nil {
 			return res, err
@@ -63,12 +61,10 @@ func (s *lessonUseCase) GetDetail(ctx context.Context, req payload.ReqGetDetail)
 
 func (s *lessonUseCase) GetByTeacherID(ctx context.Context, req payload.ReqByTeacherId) (res bool, err error) {
 	// call repository
-	resp, err := s.lessonEntity.LessonRepo.GetByTeacherID(ctx, req)
+	_, err = s.lessonEntity.LessonRepo.GetByTeacherID(ctx, req)
 	if err != nil {
 		return false, err
 	}
-
-	fmt.Println(resp)
 
 	return true, err
 }
