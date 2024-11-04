@@ -15,6 +15,20 @@ var (
 	secretKey = []byte(os.Getenv("KEY_JWT"))
 )
 
+func WrapToToken(data any) (string, error) {
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256,
+		jwt.MapClaims{
+			"data": data,
+			"exp":  time.Now().Add(time.Minute * 10).Unix(),
+			"type": "response-token",
+		})
+	tokenString, err := token.SignedString(secretKey)
+	if err != nil {
+		return "", nil
+	}
+	return tokenString, nil
+}
+
 func CreateToken(username string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256,
 		jwt.MapClaims{
