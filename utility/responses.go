@@ -12,6 +12,26 @@ type Response struct {
 }
 
 // ResponseOK is a function for send result to client
+func ResponseOKWithJwt(c *gin.Context, code int, obj interface{}) {
+
+	wrap, err := WrapToToken(Response{
+		Code:    code,
+		Message: "success",
+		Data:    obj,
+	})
+
+	if err != nil {
+		panic(err)
+	}
+
+	c.JSON(code, Response{
+		Code:    code,
+		Message: "success",
+		Data:    wrap,
+	})
+}
+
+// ResponseOK is a function for send result to client
 func ResponseOK(c *gin.Context, code int, obj interface{}) {
 	c.JSON(code, Response{
 		Code:    code,
