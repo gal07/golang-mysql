@@ -14,6 +14,7 @@ func (s *authUseCase) RefreshToken(ctx *gin.Context, req payload.RefreshToken) (
 	// check valid token
 	isvalid := util.ValidToken(ctx, req.RefreshToken)
 	if !isvalid {
+		util.CreateLog(errors.New("Token not valid."))
 		return res, errors.New("Token not valid.")
 	}
 
