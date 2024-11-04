@@ -40,6 +40,7 @@ func (e endpoint) GetDetailReport(c *gin.Context) {
 	is, err := strconv.Atoi(id)
 	if err != nil {
 		util.ResponseError(c, 200, err, nil, "Error")
+		panic(err)
 	}
 
 	// Fill Struct

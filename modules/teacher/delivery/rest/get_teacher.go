@@ -30,6 +30,7 @@ func (e endpoint) GetTeacher(c *gin.Context) {
 	}
 
 	util.ResponseOK(c, 200, res)
+	// util.ResponseOKWithJwt(c, 200, res)
 
 }
 
@@ -40,6 +41,7 @@ func (e endpoint) GetDetail(c *gin.Context) {
 	is, err := strconv.Atoi(id)
 	if err != nil {
 		util.ResponseError(c, 200, err, nil, "Error")
+		panic(err)
 	}
 
 	// Fill Struct
@@ -55,5 +57,6 @@ func (e endpoint) GetDetail(c *gin.Context) {
 	}
 
 	util.ResponseOK(c, 200, res)
+	// util.ResponseOKWithJwt(c, 200, res)
 
 }
