@@ -34,7 +34,7 @@ func (s *authUseCase) Login(ctx context.Context, req payload.Login) (res payload
 	}
 
 	// save refresh token to white list
-	_, err = s.tokenEntity.TokenRepo.Create(ctx, tokenModel.Token{
+	_, _ = s.tokenEntity.TokenRepo.Create(ctx, tokenModel.Token{
 		Token:   reftoken,
 		Type:    "refresh-token",
 		Expires: expired,
@@ -42,7 +42,7 @@ func (s *authUseCase) Login(ctx context.Context, req payload.Login) (res payload
 	})
 
 	// save token to white lsit
-	_, err = s.tokenEntity.TokenRepo.Create(ctx, tokenModel.Token{
+	_, _ = s.tokenEntity.TokenRepo.Create(ctx, tokenModel.Token{
 		Token:   token,
 		Type:    "primary-token",
 		Expires: expired,

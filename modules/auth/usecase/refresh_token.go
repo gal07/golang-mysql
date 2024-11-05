@@ -14,8 +14,8 @@ func (s *authUseCase) RefreshToken(ctx *gin.Context, req payload.RefreshToken) (
 	// check valid token
 	isvalid := util.ValidToken(ctx, req.RefreshToken)
 	if !isvalid {
-		util.CreateLog(errors.New("Token not valid."))
-		return res, errors.New("Token not valid.")
+		util.CreateLog(errors.New("token not valid"))
+		return res, errors.New("token not valid")
 	}
 
 	// do refresh token
@@ -30,7 +30,7 @@ func (s *authUseCase) RefreshToken(ctx *gin.Context, req payload.RefreshToken) (
 	res.Expire = expires
 
 	// save token
-	_, err = s.tokenEntity.TokenRepo.Create(ctx, tokenModels.Token{
+	_, _ = s.tokenEntity.TokenRepo.Create(ctx, tokenModels.Token{
 		Email:   res.Email,
 		Token:   res.Token,
 		Expires: res.Expire,
