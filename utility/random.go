@@ -20,3 +20,7 @@ func RandomUsername() string {
 func RandomFullname() string {
 	return faker.FirstName() + " " + faker.LastName()
 }
+
+func RandomUUID() string {
+	return faker.UUIDDigit()
+}
