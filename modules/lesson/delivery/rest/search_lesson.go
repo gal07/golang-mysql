@@ -9,10 +9,12 @@ import (
 
 func (e endpoint) SearchLesson(c *gin.Context) {
 
+	// get query params
+	search := c.Query("search")
+
 	// Bind
-	payload := payload.ReqSearch{}
-	if err := c.Bind(&payload); err != nil {
-		panic(err)
+	payload := payload.ReqSearch{
+		Search: search,
 	}
 
 	// service

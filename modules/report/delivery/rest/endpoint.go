@@ -23,12 +23,12 @@ func NewEndPoint(
 	// Basic Auth
 	const rootEndpoint = "/api/v1/reports"
 	r := engine.Group(rootEndpoint, util.VerifyToken())
-	r.Handle("POST", "/all", edp.GetReport)
-	r.POST("/", edp.InsertReport)
-	r.POST("/search", edp.SearchReport)
-	r.PUT("/:id", edp.UpdateReport)
-	r.DELETE("/:id", edp.DeleteReport)
+	r.GET("/", edp.GetReport)
+	r.GET("/search", edp.SearchReport)
 	r.GET("/:id", edp.GetDetailReport)
+	r.POST("/", edp.InsertReport)
+	r.PATCH("/:id", edp.UpdateReport)
+	r.DELETE("/:id", edp.DeleteReport)
 	r.Use()
 
 	return nil

@@ -10,10 +10,22 @@ import (
 
 func (e endpoint) GetTeacher(c *gin.Context) {
 
-	// Bind
-	payload := payload.ReqGetAllTeacher{}
-	if err := c.Bind(&payload); err != nil {
+	// get query params
+	cp, err := strconv.Atoi(c.Query("current_page"))
+	if err != nil {
+		util.ResponseError(c, 200, err, nil, "Error")
 		panic(err)
+	}
+	ps, err := strconv.Atoi(c.Query("page_size"))
+	if err != nil {
+		util.ResponseError(c, 200, err, nil, "Error")
+		panic(err)
+	}
+
+	// Bind
+	payload := payload.ReqGetAllTeacher{
+		CurrentPage: cp,
+		PageSize:    ps,
 	}
 
 	// service
