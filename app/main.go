@@ -20,6 +20,12 @@ func main() {
 	// server stuff
 	serverPort := os.Getenv("SERVER_PORT")
 
+	// release Mode
+	release := os.Getenv("RELEASE_MODE")
+	if release == "release" {
+		gin.SetMode(gin.ReleaseMode)
+	}
+
 	route := gin.Default()
 	route.Use(middleware.MiddlewareAuth)
 
