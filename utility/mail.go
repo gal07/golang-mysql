@@ -9,16 +9,17 @@ import (
 
 const CONFIG_SMTP_HOST = "smtp.gmail.com"
 const CONFIG_SMTP_PORT = 587
-const CONFIG_SENDER_NAME = "Read Me Boy <galihkur29@gmail.com>"
+const CONFIG_SENDER_NAME = "Student App <galihkur29@gmail.com>"
 const CONFIG_AUTH_EMAIL = "galihkur29@gmail.com"
 const CONFIG_AUTH_PASSWORD = "aqogepbxmthlljpl"
 
-func Send(target []string, target_cc []string) {
+func Send(target []string, target_cc []string, activation string) {
 
 	to := target
 	cc := target_cc
-	subject := "Test mail"
-	message := "Hello"
+	subject := "Activation user"
+	data := activation
+	message := "here to activation user <a href='http://localhost:8041/api/v1/auth/gotoactive?activation='" + data + "></a>"
 
 	err := sendMail(to, cc, subject, message)
 	if err != nil {

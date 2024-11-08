@@ -2,6 +2,7 @@ package utility
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"os"
 	"strings"
@@ -14,6 +15,11 @@ import (
 var (
 	secretKey = []byte(os.Getenv("KEY_JWT"))
 )
+
+type Myclaim struct {
+	Username string
+	Email    string
+}
 
 func WrapToToken(data any) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256,
@@ -29,13 +35,8 @@ func WrapToToken(data any) (string, error) {
 	return tokenString, nil
 }
 
-func CreateToken(username string) (string, error) {
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256,
-		jwt.MapClaims{
-			"username": username,
-			"exp":      time.Now().Add(time.Minute * 60).Unix(),
-			"type":     "primary-token",
-		})
+func CreateToken(mapclaims jwt.MapClaims) (string, error) {
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, mapclaims)
 	tokenString, err := token.SignedString(secretKey)
 	if err != nil {
 		return "", nil
@@ -106,7 +107,7 @@ func VerifyToken() func(c *gin.Context) {
 
 }
 
-func ValidToken(c *gin.Context, token string) bool {
+func ValidToken(c *gin.Context, token string) (claims any, bol bool) {
 
 	// Parse
 	tokens, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
@@ -114,13 +115,21 @@ func ValidToken(c *gin.Context, token string) bool {
 	})
 
 	if err != nil {
-		return false
+		return nil, false
 	}
 
 	if !tokens.Valid {
-		return false
+		return nil, false
 	}
 
-	return true
+	myclaim := map[string]string{}
+
+	if claims, ok := tokens.Claims.(jwt.MapClaims); ok {
+		username := fmt.Sprint(claims["username"])
+		email := fmt.Sprint(claims["email"])
+		myclaim["username"] = username
+		myclaim["email"] = email
+	}
+	return myclaim, true
 
 }

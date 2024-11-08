@@ -12,7 +12,7 @@ import (
 func (s *authUseCase) RefreshToken(ctx *gin.Context, req payload.RefreshToken) (res payload.ResRefreshToken, err error) {
 
 	// check valid token
-	isvalid := util.ValidToken(ctx, req.RefreshToken)
+	_, isvalid := util.ValidToken(ctx, req.RefreshToken)
 	if !isvalid {
 		util.CreateLog(errors.New("token not valid"))
 		return res, errors.New("token not valid")

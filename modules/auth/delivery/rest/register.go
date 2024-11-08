@@ -10,7 +10,7 @@ import (
 func (e endpoint) Register(c *gin.Context) {
 
 	// Bind
-	payloads := models.Auth{}
+	payloads := models.Register{}
 	if err := c.Bind(&payloads); err != nil {
 		panic(err)
 	}

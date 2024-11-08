@@ -22,6 +22,7 @@ func NewEndPoint(
 	// Basic Auth
 	const rootEndpoint = "/api/v1/auth"
 	r := engine.Group(rootEndpoint)
+	r.GET("/gotoactive", edp.ActivatedUser)
 	r.POST("/signup", edp.Register)
 	r.POST("/signin", edp.Login)
 	r.POST("/refreshtoken", edp.RefreshToken)

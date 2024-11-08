@@ -6,6 +6,9 @@ import (
 	"gosql/modules/auth/payload"
 	tokenModel "gosql/modules/token/models"
 	util "gosql/utility"
+	"time"
+
+	"github.com/golang-jwt/jwt/v5"
 )
 
 func (s *authUseCase) Login(ctx context.Context, req payload.Login) (res payload.ResLogin, err error) {
@@ -22,7 +25,11 @@ func (s *authUseCase) Login(ctx context.Context, req payload.Login) (res payload
 	}
 
 	// create token
-	token, err := util.CreateToken(req.Email)
+	token, err := util.CreateToken(jwt.MapClaims{
+		"username": req.Email,
+		"exp":      time.Now().Add(time.Minute * 60).Unix(),
+		"type":     "primary-token",
+	})
 	if err != nil {
 		return res, err
 	}
