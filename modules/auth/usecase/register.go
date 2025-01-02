@@ -36,7 +36,7 @@ func (s *authUseCase) Register(ctx context.Context, req models.Register) (res pa
 	activation, err := util.CreateToken(jwt.MapClaims{
 		"username": req.Username,
 		"email":    req.Email,
-		"exp":      time.Now().Add(time.Hour * 24).Unix(),
+		"exp":      time.Now().Add(time.Minute * 1).Unix(),
 		"type":     "activate-token",
 	})
 	if err != nil {
@@ -51,10 +51,8 @@ func (s *authUseCase) Register(ctx context.Context, req models.Register) (res pa
 	}
 
 	// send email
-	var mails = []string{}
-	var cc = []string{}
-	mails = append(mails, req.Email)
-	cc = append(cc, req.Email)
+	var mails = []string{req.Email}
+	var cc = []string{req.Email}
 	go util.Send(mails, cc, activation)
 
 	// Fill payload
