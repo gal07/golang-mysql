@@ -1,0 +1,31 @@
+version: '3.8'
+services:
+  app:
+    container_name: gosql
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    env_file:
+      - ./app/.env
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+
+  db:
+    image: "mysql:8.0"
+    container_name: gosql_db
+    env_file:
+      - ./app/.env
+    environment:
+      MYSQL_USER: root
+      MYSQL_ROOT_PASSWORD: test
+      MYSQL_PASSWORD: test
+      MYSQL_DATABASE: belajar_go
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
